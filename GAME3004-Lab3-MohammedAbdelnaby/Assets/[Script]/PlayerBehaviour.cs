@@ -51,6 +51,12 @@ public class PlayerBehaviour : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
+    private void LateUpdate()
+    {
+        if (transform.position.y <= -5.0f)
+            transform.position = new Vector3(0, 1.30f, -16.0f);
+    }
+
     void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
