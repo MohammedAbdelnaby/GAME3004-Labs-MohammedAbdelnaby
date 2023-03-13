@@ -34,8 +34,8 @@ public class LoadSaveManager : MonoBehaviour
         FileStream file = File.Create(Application.persistentDataPath + "/PlayerData.dat");
         PlayerData data = new PlayerData();
 
-        data.PlayerPosition = JsonUtility.ToJson(transform.position);
-        data.PlayerRotation = JsonUtility.ToJson(transform.rotation);
+        data.PlayerPosition = JsonUtility.ToJson(playerTransform.position);
+        data.PlayerRotation = JsonUtility.ToJson(playerTransform.localEulerAngles);
 
         bf.Serialize(file, data);
         file.Close();
@@ -53,9 +53,11 @@ public class LoadSaveManager : MonoBehaviour
             PlayerData data = (PlayerData)bf.Deserialize(file);
             file.Close();
 
+            var position = JsonUtility.FromJson<Vector3>(data.PlayerPosition);
+            var rotation = JsonUtility.FromJson<Vector3>(data.PlayerRotation);
             playerTransform.gameObject.GetComponent<CharacterController>().enabled = false;
             playerTransform.position = JsonUtility.FromJson<Vector3>(data.PlayerPosition);
-            playerTransform.rotation = Quaternion.Euler(JsonUtility.FromJson<Vector3>(data.PlayerRotation));
+            playerTransform.rotation = Quaternion.Euler(rotation.x, rotation.y, rotation.z);
             playerTransform.gameObject.GetComponent<CharacterController>().enabled = true;
 
             Debug.Log("Loaded");
